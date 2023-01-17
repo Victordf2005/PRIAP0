@@ -1,4 +1,4 @@
-protected class Personaje {
+public class Personaje {
 
     protected int vida;
     protected int ataque;
@@ -14,15 +14,15 @@ protected class Personaje {
 }
 
 // Esto es un comentario
-protected class Guerrero : Personaje {
+public class Guerrero : Personaje {
     public Guerrero() : base (20, 10) {}
 }
 
-protected class Arquero : Personaje {
-    public Personaje() : base(20, 5) {}
+public class Arquero : Personaje {
+    public Arquero() : base(20, 5) {}
 }
 
-protected class Aldeano : Personaje {
+public class Aldeano : Personaje {
     public Aldeano(): base(20, 0) {}
 }
 
