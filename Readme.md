@@ -1,4 +1,3 @@
-# Léeme
 
 main.cs
 
@@ -15,3 +14,5 @@ Crear 2 clases: Guerrero, Arquero
 Un ataque de cualquier personaje de un equipo a otro
 Si una unidad esta muerta pasa turno (print)
 Imprimir por pantalla quien ataca a quien lo que pase 
+
+
