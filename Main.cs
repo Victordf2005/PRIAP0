@@ -8,11 +8,12 @@ class Program
     static void Main()
     {
         // Probando que compila y que se usan tipos enumerados
-        int fuerzaAldeana = (int)TipoPersonaje.Aldeano;
-        var tipoAldeano = TipoPersonaje.Aldeano;
+       const int fuerzaAldeana = 0;
+       const int fuerzaGuerrero = 10;
+       const int fuerzaArquero = 5;
 
-        Console.WriteLine( $"La fuerza de cada unidad aldeana tiene valor: {fuerzaAldeana} ");
-        Console.WriteLine( $"Cada unidad aldeana es del tipo enumerado: {tipoAldeano} ");
+
+        
 
         // Toda Unidad tiene el mismo valor entero para su salud/vida
         int vida = 20;
@@ -23,7 +24,7 @@ class Program
         // Probando una instancia de la clase Personaje
         Arquero pepe = new Arquero (
             vida, 
-            (int)TipoPersonaje.Arquero 
+            fuerzaArquero 
         );
 
         // Agregando un Personaje a la lista del equipo Azul
@@ -34,15 +35,9 @@ class Program
 }
 
 
-// Valores constantes de las unidades de los equipos
-// Se asigna un entero que equivale a su valor de ataque
 
-enum TipoPersonaje {
-    Aldeano = 0,
-    Arquero = 5,
-    Guerrero = 10
-}
 
+ 
 
 // Cada equipo juega con varios tipos de personajes (Unidades)
 // Cada Tipo se distingue por:
