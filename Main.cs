@@ -23,7 +23,7 @@ class Program
         // Probando una instancia de la clase Personaje
         Arquero pepe = new Arquero (
             vida, 
-            (int)TipoPersonaje.Arquero;
+            (int)TipoPersonaje.Arquero 
         );
 
         // Agregando un Personaje a la lista del equipo Azul
