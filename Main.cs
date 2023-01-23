@@ -7,15 +7,19 @@ class Program
 {
     static void Main()
     {
-        // Probando que compila y que se usan tipos enumerados
-       const int fuerzaAldeano = 0;
-       const int fuerzaGuerrero = 10;
-       const int fuerzaArquero = 5;
 
-       private bool gameOver = false;
+       // constantes de fuerza de cada unidad
+        const int fuerzaAldeano = 0;
+        const int fuerzaGuerrero = 10;
+        const int fuerzaArquero = 5;
 
         // Toda Unidad tiene el mismo valor entero para su salud/vida
         int vida = 20;
+
+        bool gameOver = false;
+
+        Random aleatorio = new Random();
+        int equipoAtacante;
 
         // Creando una lista vacía para el equipo Azul
         List<Personaje> EquipoAzul = new List<Personaje>();
@@ -23,39 +27,62 @@ class Program
 
         // Agregando un Personaje a la lista del equipo Azul
 
-        EquipoAzul.Add(new Aldeano(20, fuerzaAldeano));
-        EquipoAzul.Add(new Aldeano(20, fuerzaAldeano));
-        EquipoAzul.Add(new Arquero(20, fuerzaArquero));
-        EquipoAzul.Add(new Guerrero(20, fuerzaGuerrero));
+        EquipoAzul.Add(new Aldeano(vida, fuerzaAldeano));
+        EquipoAzul.Add(new Aldeano(vida, fuerzaAldeano));
+        EquipoAzul.Add(new Arquero(vida, fuerzaArquero));
+        EquipoAzul.Add(new Guerrero(vida, fuerzaGuerrero));
 
 
-        EquipoRojo.Add(new Aldeano(20, fuerzaAldeano));
-        EquipoRojo.Add(new Aldeano(20, fuerzaAldeano));
-        EquipoRojo.Add(new Arquero(20, fuerzaArquero));
-        EquipoRojo.Add(new Guerrero(20, fuerzaGuerrero));
+        EquipoRojo.Add(new Aldeano(vida, fuerzaAldeano));
+        EquipoRojo.Add(new Aldeano(vida, fuerzaAldeano));
+        EquipoRojo.Add(new Arquero(vida, fuerzaArquero));
+        EquipoRojo.Add(new Guerrero(vida, fuerzaGuerrero));
 
         while (! gameOver) {
-            LanzarAtaque(EquipoAzul, EquipoRojo);
+            // Escogemos atacante
+            //Con enteros, el valor máximo está excluido
+            equipoAtacante = aleatorio.Next(,2);
+            if (equipoAtacante == 0) {  
+                // Ataca EquipoAzul
+                LanzarAtaque(EquipoAzul, EquipoRojo);
+            } else {
+                // Ataca EquipoRojo
+                LanzarAtaque(EquipoRojo, EquipoAzul);
+            }
         }
+
+        if (EquipoAzul.length > 0) {
+            Console.WriteLine("Ganador: EQUIPO AZUL.");
+        } else {
+            Console.WriteLine("Ganador: EQUIPO ROJO.");
+        }
+        
 
 
     }
 
 
-    private LanzarAtaque(List<Personaje> equipo1, List<Personaje> equipo2) {
+    private void LanzarAtaque(List<Personaje> equipo1, List<Personaje> equipo2) {
 
-        // escoger equipo atacante
-
-        //
-
+        // Escoger unidad atacante
+        Personaje atacante = equipo1(Random.Range(0, equipo1.length));
+        // Escoger unidad atacada
+        
+        int atacadoIndex = Random.Range(0, equipo2.length);
+        Personaje atacado = equipo2(atacadoIndex);
+        // Ejecutar ataque
+        atacado.ReceiveAttack(atacante);
+        if (atacado.IsDead()) {
+            equipo2.RemoveAt(atacadoIndex);
+            if (equipo2.length == 0) {
+                gameOver = true;
+            }
+        }
     }
 
 
 
 }
-
-
-
 
  
 
@@ -65,122 +92,101 @@ class Program
 //      su cantidad de fuerza de ataque
 
 public abstract class Personaje {
-    public abstract int Attack();
-    public abstract void LoseLife(int value);
 
-    public void Info() {
-        Console.WriteLine($"Este personaje tiene {Attack()} fuerza de ataque");
+    protected int Life {get; set;}
+    protected int Attack {get; set;}
+
+    public void LoseLife(int value) {
+        this.Life -= value;
     }
+
+    public void ReceiveAttack(Personaje other) {
+        if (this.Attack <= other.Attack) {
+            LoseLife(other.Attack);
+        }
+    }
+
+    public bool IsDead() {
+        return Life<=0;
+        }
+
 }
 
 
 public class Arquero: Personaje
 {
-    private int _Vida;
-    private int _Ataque;
 
     public Arquero (
         int pVida,
         int pAtaque )
     {
-        Vida = pVida;
-        Ataque = pAtaque;
+        Life = pVida;
+        Attack = pAtaque;
     }
 
+/**
     public int Vida
     {
         get { return _Vida; }
         set { _Vida = value; }
     }
 
-    public int Ataque
+    public int getAttack
     {
-        get { return _Ataque; }
+        get { return Attack; }
         set { _Ataque = value; }
     }
-
-    public override int Attack()
-    {
-        return Ataque;
-    }
-
-    public override void LoseLife ( int atack )
-    {
-        Vida -= atack;
-    }
+*/
 }
+
 
     public class Guerrero: Personaje
 {
-    private int _Vida;
-    private int _Ataque;
 
     public Guerrero (
         int pVida,
         int pAtaque )
     {
-        Vida = pVida;
-        Ataque = pAtaque;
+        base.Life = pVida;
+        base.Attack = pAtaque;
     }
-
+/**
     public int Vida
     {
         get { return _Vida; }
         set { _Vida = value; }
     }
 
-    public int Ataque
+    public int getAttack
     {
-        get { return _Ataque; }
+        get { return Attack;}
         set { _Ataque = value; }
     }
-
-    public override int Attack()
-    {
-        return Ataque;
-    }
-
-    public override void LoseLife ( int atack )
-    {
-        Vida -= atack;
-    }
-
+*/
 }
     public class Aldeano: Personaje
 {
-    private int _Vida;
-    private int _Ataque;
 
     public Aldeano (
         int pVida,
         int pAtaque )
     {
-        Vida = pVida;
-        Ataque = pAtaque;
+        base.Life = pVida;
+        base.Attack = pAtaque;
     }
-
+/**
     public int Vida
     {
         get { return _Vida; }
         set { _Vida = value; }
     }
 
-    public int Ataque
+    public int getAttack
     {
-        get { return _Ataque; }
+        get { return Attack; }
         set { _Ataque = value; }
     }
-
-    public override int Attack()
-    {
-        return Ataque;
-    }
-
-    public override void LoseLife ( int atack )
-    {
-        Vida -= atack;
-    }
-
+*/
 }
 
 
