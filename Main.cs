@@ -1,211 +1,209 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
-class Program
+
+/*
+ Autores: Gabriel,Sonia,Victor,Racha
+*/
+namespace Practica1
 {
-    // Nota de Sonia:
-        // El método Main() debe ser estático en .NET (creo)
-    static void Main()
+    //Clase unidad clase principal de la cuales descenderan guerrero y arquero por defecto la unidad se tomara como un aldeano
+    public class Unidad
     {
-        // Constantes de fuerza de cada unidad
-        const int fuerzaAldeana = 0;
-        const int fuerzaGuerrera = 10;
-        const int fuerzaArquera = 5;
-        // Constante de salud/vida
-        const int vida = 20;
+        //Propiedades de la unidad
+        #region propiedades
+        protected short vida;
+        protected short ataque;
+        // tipoUnidad 0 = aldeano 1 = guerrero 2 = arquero
+        protected short tipoUnidad;
+        #endregion
 
-        // Antes de la primera elección de turno
-        int equipoAtacante = -1;
-
-        // Variable global de fin de juego (por implementar)
-            // Nota de Sonia:
-                // No se puede poner pública
-        bool gameOver = false;
-
-        // Entero en DEV para contar las vueltas de ejecución
-        // mientras gameOver == true
-        int update = 0;
-
-        // Random() es un método que se debe crear para cada uso
-        // Random aleatorio = new Random();
-
-        // Creando una lista vacía para el equipo Azul
-        List<Personaje> EquipoAzul = new List<Personaje>();
-        List<Personaje> EquipoRojo = new List<Personaje>();
-
-        // Agregando 4 unidades al equipo azul
-        EquipoAzul.Add(new Aldeano(vida, fuerzaAldeana));
-        EquipoAzul.Add(new Aldeano(vida, fuerzaAldeana));
-        EquipoAzul.Add(new Arquero(vida, fuerzaArquera));
-        EquipoAzul.Add(new Guerrero(vida, fuerzaGuerrera));
-
-        // Agregando 4 unidades al equipo rojo
-        EquipoRojo.Add(new Aldeano(vida, fuerzaAldeana));
-        EquipoRojo.Add(new Aldeano(vida, fuerzaAldeana));
-        EquipoRojo.Add(new Arquero(vida, fuerzaArquera));
-        EquipoRojo.Add(new Guerrero(vida, fuerzaGuerrera));
-
-        while ( ! gameOver ) {
-            // Establecer turnos de ataque
-            // Se inicia con una moneda al aire
-
-            equipoAtacante = SetTurno( equipoAtacante );
-
-            // (DEV) Mostrando las vueltas de ejecución
-            update++;
-            Console.WriteLine( $"Class Program: Ejecutando Main() num {update}. Turno para: {equipoAtacante}.\n" );
-
-            // Turno para el equipo azul == 0
-            if ( equipoAtacante == 0 ) {
-
-                gameOver = LanzarAtaque( EquipoAzul, EquipoRojo );
-
-                // Turno para el equipo rojo == 1
-            } else {
-
-                gameOver = LanzarAtaque( EquipoRojo, EquipoAzul );
-            }
-        }
-
-        // El método Length() es para arrays. Count() para listas
-        if ( EquipoAzul.Count > 0 ) {
-            Console.WriteLine( "Ganador: EQUIPO AZUL." );
-        } else {
-            Console.WriteLine( "Ganador: EQUIPO ROJO." );
-        }
-    }
-
-    // Solucionar error de compilación
-    // error CS0120: An object reference is required for the non-static field, method, or property 'Program.LanzarAtaque(List<Personaje>, List<Personaje>)'
-
-    // El método Main es estático y sólo puede acceder a miembros estáticos
-    // de la misma clase
-
-    static bool LanzarAtaque(List<Personaje> equipo1, List<Personaje> equipo2)
-    {
-        Random rnd = new Random();
-
-        // Para enviar (o no) el gameOver
-        bool noDanger = false;
-
-        // Escoger unidad atacante
-        int atacanteIndex = rnd.Next( equipo1.Count);
-        Personaje atacante = equipo1[ atacanteIndex ];
-
-        // Escoger unidad atacada
-        int atacadoIndex = rnd.Next( equipo2.Count);
-        Personaje atacado = equipo2[ atacadoIndex ];
-
-        // Ejecutar ataque
-        atacado.ReceiveAttack( atacante );
-        if ( atacado.IsDead() )
+        public Unidad()
         {
-            equipo2.RemoveAt( atacadoIndex );
-            if ( equipo2.Count == 0 )
+
+            this.vida = 20;
+            this.ataque = 0;
+            this.tipoUnidad = 0;
+        }
+        #region Funciones
+        public short Vida()
+        {
+            //Devuelve la vida de la unidad
+            return this.vida;
+        }
+        public short RestarVida(short v)
+        {
+            //resta vida a la unidad
+            this.vida -= v;
+            if (vida <= 0)
             {
-                // gameOver = true;
-                // Cuando no haya unidades enemigas se establece el gameOver
-                noDanger = true;
-                Console.WriteLine( "*** GAME OVER ***" );
+                this.vida = 0;
+                Console.WriteLine($"Unidad {this.TipoUnidad()} a muerto\n");
+            }
+
+            return Vida();
+        }
+        public short Ataque()
+        {
+            //devuelve valor del ataque
+            return this.ataque;
+        }
+        public String TipoUnidad()
+        {
+            //devuelve valor del ataque
+            switch (this.tipoUnidad)
+            {
+                case 0:
+                    return "Aldeano:";
+                case 1:
+                    return "Guerrero:";
+                case 2:
+                    return "Arquero:";
+                default:
+                    return "No Definido:";
+
+            }
+        }
+        #endregion
+
+    }
+    //Clase Guerrero hereda de unidad
+    public class Guerrero : Unidad
+    {
+        public Guerrero() : base()
+        {
+            base.ataque = 10;
+            base.tipoUnidad = 1;
+        }
+    }
+    //Clase Arquero hereda de unidad
+    public class Arquero : Unidad
+    {
+        public Arquero() : base()
+        {
+            base.ataque = 5;
+            base.tipoUnidad = 2;
+        }
+    }
+
+    public class Program
+    {
+        //Creamos las listas de los dos equipos
+        private static List<Unidad> equipoRojo = CrearEquipo();
+        private static List<Unidad> equipoAzul = CrearEquipo();
+        public static void Main(string[] args)
+        {
+            //el primer turno lo elejimos aleatoriamente entre 0 y 1 0 = rojo 1 = azul
+            short turno = (short)new Random().Next(0, 2);
+            //el primer turno lo elejimos quien va a atacar
+            short atacante = (short)new Random().Next(0, equipoRojo.Count());
+            //el primer turno lo elejimos  quien va a defender
+            short defensor = (short)new Random().Next(0, equipoAzul.Count());
+            //variable bool que controla el bucle del juego
+            bool fin = false;
+            do
+            {
+                //usaremos el bucle do while como bucle de juego y cuando un equipo tenga las vidas totales a 0 este equipo perdera y saldremos del bucle
+                //se cambia el turno al siguiente equipo
+                turno = (turno == 0) ? turno = 1 : turno = 0;
+
+                switch (turno)
+                {
+                    case 0:
+                        //turno del equipo rojo
+                        if (VidasEquipo(equipoRojo))
+                        {
+                            fin = true;
+                            Console.WriteLine("Equipo Azul Gana\n");
+                            break;
+                        }
+                        else
+                        {
+                            Console.Write("Turno del equipo rojo: ");
+                            AcionesDeTurno(equipoRojo[atacante], equipoAzul[defensor]);
+                            break;
+                        }
+                    case 1:
+                        //turno del equipo Azul
+                        if (VidasEquipo(equipoAzul))
+                        {
+                            fin = true;
+                            Console.WriteLine("Equipo Rojo Gana\n");
+                            break;
+                        }
+                        Console.Write("Turno del equipo azul: ");
+                        AcionesDeTurno(equipoAzul[atacante], equipoRojo[defensor]);
+                        break;
+                    default:
+                        Console.WriteLine("Error: equipos no saben que hacer en el truno");
+                        break;
+                }
+                //se eligue al defensor
+                defensor = DefensorVivo(turno);
+                //se eligue al atacante 
+                atacante = (short)new Random().Next(0, equipoAzul.Count());
+            } while (!fin);
+            //Cuando el equipo se queda sin unidades vivas finalizamos el bucle 
+            Console.ReadLine();
+        }
+
+        private static List<Unidad> CrearEquipo()
+        {
+            List<Unidad> listTemp = new List<Unidad>();
+            listTemp.Add(new Unidad());
+            listTemp.Add(new Guerrero());
+            listTemp.Add(new Unidad());
+            listTemp.Add(new Arquero());
+            return listTemp;
+        }
+
+        private static bool VidasEquipo(List<Unidad> equipo)
+        {
+            short vidas = 0;
+            foreach (Unidad item in equipo)
+            {
+                vidas += item.Vida();
+            }
+            return vidas <= 0;
+        }
+
+        private static void AcionesDeTurno(Unidad atacante, Unidad defensor)
+        {
+            if (atacante.Vida() == 0)
+            {
+                Console.WriteLine($"{atacante.TipoUnidad()} muerto pasa turno\n");
+            }
+            else
+            {
+                Console.Write($"{atacante.TipoUnidad()} Ataca {defensor.TipoUnidad()} defiende\t");
+
+                if ((atacante.Ataque() + defensor.Ataque()) == 0)
+                {
+                    //si un aldeano ataca a otro este le arra 5 de daño ya que podria llegar a un bucle infinito si no se hace
+                    Console.Write($"{atacante.TipoUnidad()} Infrigue: 5 de daño a {defensor.TipoUnidad()} \n");
+                    defensor.RestarVida(5);
+                }
+                else
+                {
+                    Console.Write($"{atacante.TipoUnidad()} Infrigue: {atacante.Ataque()} de daño a {defensor.TipoUnidad()} \n");
+                    defensor.RestarVida(atacante.Ataque());
+                }
             }
         }
 
-        return noDanger;
-    }
+        private static short DefensorVivo(short t)
+        {//se eligue aleatoriamente un defensor si este esta muerto se vuelve a comprobar
+            short num = 0;
+            Unidad unidadTemp;
+            do
+            {
+                num = (short)new Random().Next(0, equipoRojo.Count());
+                //al tener los mismos miembros calculamos el ramdon con uno para ambos
+                unidadTemp = (t == 0) ? unidadTemp = equipoRojo[num] : unidadTemp = equipoAzul[num];
 
-
-    static int SetTurno ( int atacante )
-    {
-        Random rnd = new Random();
-
-        switch( atacante )
-        {
-            case 0:
-                atacante = 1;
-            break;
-
-            case 1:
-                atacante = 0;
-            break;
-
-            // Escogemos atacante ( moneda al aire )
-            default:
-                // Random.Next(int maxValue)
-                // devuelve un entero aleatorio no negativo
-                // El primer parámetro se incluye y el segundo se excluye
-
-                // Se corrige errata
-                // equipoAtacante = aleatorio.Next(,2);
-                atacante = rnd.Next(2);
-            break;
+            } while (unidadTemp.Vida() == 0);
+            return num;
         }
-
-        return atacante;
-    }
-}
-
-// Cada equipo juega con varios tipos de personajes (Unidades)
-// Cada Tipo se distingue por:
-//      su cantidad de salud/vida (En este caso igual para todas)
-//      su cantidad de fuerza de ataque
-
-public abstract class Personaje {
-
-    protected int Life { get; set; }
-    protected int Attack { get; set; }
-
-    public void LoseLife( int value )
-    {
-        this.Life -= value;
-    }
-
-    public void ReceiveAttack( Personaje other ) {
-        if ( this.Attack <= other.Attack )
-        {
-            LoseLife(other.Attack);
-        }
-    }
-
-    public bool IsDead() {
-        return Life <=0;
-    }
-}
-
-
-public class Arquero: Personaje
-{
-
-    public Arquero (
-    int pVida,
-    int pAtaque )
-    {
-        Life = pVida;
-        Attack = pAtaque;
-    }
-}
-
-
-public class Guerrero: Personaje
-{
-
-    public Guerrero (
-    int pVida,
-    int pAtaque )
-    {
-        base.Life = pVida;
-        base.Attack = pAtaque;
-    }
-}
-
-
-public class Aldeano: Personaje
-{
-
-    public Aldeano (
-    int pVida,
-    int pAtaque )
-    {
-        base.Life = pVida;
-        base.Attack = pAtaque;
     }
 }
